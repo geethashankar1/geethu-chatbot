@@ -1,0 +1,10 @@
+nlu_data = {
+    "rasa_nlu_data": {
+        "common_examples": [
+            {"text": "I want to return my order", "intent": "return_request", "entities": []},
+            {"text": "Where is my package?", "intent": "order_tracking", "entities": []},
+            {"text": "Tell me about the new iPhone", "intent": "product_info", "entities": []},
+            {"text": "I need help with my payment", "intent": "payment_issue", "entities": []},
+        ]
+    }
+}

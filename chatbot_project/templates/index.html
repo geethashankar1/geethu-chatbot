@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geethu Chat</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #c3cfe2, #f5d2d4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      width: 900px;
+      height: 550px;
+      display: flex;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 35%;
+      background-color: #f5f7fa;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .sidebar h1 {
+      font-size: 26px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar input {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .chat-box {
+      width: 65%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: #ffffff;
+    }
+
+    .chat-box .messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .chat-box .message {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+    }
+
+    .chat-box .input-area {
+      display: flex;
+    }
+
+    .chat-box input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+    }
+
+    .chat-box button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="sidebar">
+      <h1>Geethu Chat</h1>
+      <input type="text" placeholder="Enter E-mail:" />
+      <input type="password" placeholder="Enter password:" />
+      <p style="color: #ff9800; margin-top: 10px;"></p>
+    </div>
+    <div class="chat-box">
+      <div class="messages" id="chatLog">
+        <div class="message">🧾 How may I help you?</div>
+      </div>
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Your message" />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById("userInput");
+      const chatLog = document.getElementById("chatLog");
+      const userMessage = userInput.value.trim();
+      if (!userMessage) return;
+
+      // Add user message
+      const userDiv = document.createElement("div");
+      userDiv.className = "message";
+      userDiv.innerHTML = `<b>You:</b> ${userMessage}`;
+      chatLog.appendChild(userDiv);
+
+      // Send to backend
+      try {
+        const res = await fetch("http://localhost:5000/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        const data = await res.json();
+
+        const botDiv = document.createElement("div");
+        botDiv.className = "message";
+        botDiv.innerHTML = `<b>Bot:</b> ${data.response}`;
+        chatLog.appendChild(botDiv);
+
+      } catch (error) {
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "message";
+        errorDiv.innerHTML = `<b>Bot:</b> Error connecting to server.`;
+        chatLog.appendChild(errorDiv);
+      }
+
+      userInput.value = "";
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  </script>
+</body>
+</html>

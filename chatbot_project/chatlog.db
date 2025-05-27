@@ -1,0 +1,9 @@
+import sqlite3
+
+def log_message(user_input, response):
+    conn = sqlite3.connect("chatlog.db")
+    cursor = conn.cursor()
+    cursor.execute("CREATE TABLE IF NOT EXISTS messages (user_input TEXT, response TEXT)")
+    cursor.execute("INSERT INTO messages (user_input, response) VALUES (?, ?)", (user_input, response))
+    conn.commit()
+    conn.close()
